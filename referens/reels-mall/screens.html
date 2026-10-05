@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Fredoka;font-weight:600;src:url(../node_modules/@fontsource/fredoka/files/fredoka-latin-600-normal.woff2)}
+@font-face{font-family:Fredoka;font-weight:700;src:url(../node_modules/@fontsource/fredoka/files/fredoka-latin-700-normal.woff2)}
+@font-face{font-family:Inter;font-weight:400;src:url(../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2)}
+@font-face{font-family:Inter;font-weight:500;src:url(../node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2)}
+@font-face{font-family:Inter;font-weight:600;src:url(../node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2)}
+@font-face{font-family:Inter;font-weight:700;src:url(../node_modules/@fontsource/inter/files/inter-latin-700-normal.woff2)}
+:root{--fg:hsl(236 63% 16%);--muted:hsl(305 15% 32%);--mutedbg:hsl(359 66% 89%);--turk:hsl(183 64% 70%);--lav:hsl(270 65% 73%);--border:hsl(270 20% 88%);--bg:hsl(350 35% 97%)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:360px;height:780px;overflow:hidden;font-family:Inter,sans-serif;color:var(--fg);background:var(--bg)}
+.screen{position:absolute;inset:0;display:none}
+.screen.on{display:block}
+.status{height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font:600 14px Inter;color:var(--fg)}
+/* parent page behind dialog */
+.parent{background:linear-gradient(135deg,hsl(350 25% 98%),hsl(270 15% 97%) 50%,hsl(183 15% 96%))}
+.ph{padding:10px 20px 0}
+.ph h1{font:700 24px Fredoka;margin-top:10px}
+.ph p{font-size:14px;color:var(--muted);margin-top:4px}
+.childcard{margin:18px 20px 0;background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px;box-shadow:0 4px 20px hsl(270 20% 85%/.3)}
+.childcard .row{display:flex;align-items:center;gap:10px}
+.av{width:40px;height:40px;border-radius:999px;background:hsl(185 55% 94%);display:flex;align-items:center;justify-content:center}
+.av img{width:24px}
+.cname{font:600 18px Fredoka}
+.csub{font-size:13px;color:var(--muted)}
+.btn{height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;font:600 15px Inter}
+.btn.primary{background:var(--turk);color:var(--fg)}
+.btn.outline{background:#fff;border:1px solid var(--border);height:56px;font-weight:500}
+.btn.dis{opacity:.5}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.8)}
+.dialog{position:absolute;left:14px;right:14px;top:120px;background:#fff;border-radius:18px;padding:22px 20px 20px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.dialog h2{font:600 20px Inter;letter-spacing:-.01em}
+.dialog .desc{font-size:14px;color:var(--muted);margin-top:6px}
+.lbl{font-size:12px;color:var(--muted);margin:18px 0 6px}
+.info{display:flex;gap:6px;font-size:12px;line-height:1.4;color:var(--muted);background:hsl(359 66% 89%/.4);border:1px solid hsl(270 20% 88%/.6);border-radius:10px;padding:10px;margin-top:16px}
+.info b{color:var(--fg);font-weight:500}
+.small{font-size:12px;color:var(--muted);margin-top:8px}
+.link{font-size:14px;color:var(--fg);text-decoration:underline;text-underline-offset:3px;margin-top:10px;opacity:.85}
+.thumb{width:80px;height:80px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+/* camera */
+.cam{background:#000}
+.cam .pv{position:absolute;left:0;right:0;top:92px;height:480px;overflow:hidden}
+.cam .pv img{width:100%;height:100%;object-fit:cover}
+.cam .modes{position:absolute;top:592px;left:0;right:0;text-align:center;font:600 13px Inter;color:#ffd60a;letter-spacing:.06em}
+.cam .shutter{position:absolute;left:50%;top:636px;width:74px;height:74px;margin-left:-37px;border-radius:999px;border:5px solid #fff;display:flex;align-items:center;justify-content:center}
+.cam .shutter div{width:58px;height:58px;border-radius:999px;background:#fff}
+.cam .x{position:absolute;left:24px;top:662px;color:#fff;font:500 16px Inter}
+/* progress */
+.spin{width:64px;height:64px;border-radius:999px;background:hsl(183 64% 70%/.12);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.ring{width:32px;height:32px;border-radius:999px;border:3.5px solid var(--turk);border-right-color:transparent}
+.bar{height:8px;border-radius:99px;background:hsl(183 64% 70%/.2);overflow:hidden;margin-top:26px}
+.bar div{height:100%;background:var(--turk);border-radius:99px}
+/* toast (shadcn, mobil = överst) */
+.toast{position:absolute;left:14px;right:14px;top:48px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:0 10px 30px rgba(15,19,64,.15)}
+.toast .t{font:600 14px Inter}
+.toast .d{font-size:14px;color:var(--muted);margin-top:3px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:999px;background:hsl(185 55% 94%);color:hsl(185 66% 30%);font-weight:600;margin-top:12px}
+</style></head><body>
+
+<!-- 1. Ny läxa (öppnad från "Fota kvällens läxa") -->
+<div class="screen parent" id="s1">
+  <div class="status"><span>17:15</span><span>●●● ▮</span></div>
+  <div class="ph"><h1>Hej!</h1><p>Alvas läxor</p></div>
+  <div class="childcard"><div class="row"><div class="av"><img src="../public/emoji-1f9b8.png"></div><div><div class="cname">Alva</div><div class="csub">Åk 2</div></div></div></div>
+  <div class="dim"></div>
+  <div class="dialog">
+    <h2>Ny läxa</h2>
+    <div class="desc">Fota läxbladet. Vi delar upp det i steg.</div>
+    <div class="lbl">Barn</div>
+    <div style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:500"><img src="../public/emoji-1f9b8.png" style="width:20px">Alva</div>
+    <div class="info">ⓘ<span><b>Fota läxan innan barnet börjar skriva.</b> Bilden ska visa den tomma uppgiften — inga svar eller namn behöver vara med.</span></div>
+    <div class="btn outline" id="takebtn" style="margin-top:10px">📷&nbsp; Ta en bild</div>
+    <div class="btn outline" style="margin-top:8px">⇪&nbsp; Välj fil (bild eller PDF)</div>
+    <div class="small">JPG, PNG, PDF – max 10 sidor</div>
+    <div class="link">Fler sätt</div>
+    <div class="btn primary dis" style="margin-top:16px">Dela upp i steg</div>
+  </div>
+</div>
+
+<!-- 2. Kameran (telefonens egen) -->
+<div class="screen cam" id="s2">
+  <div class="pv"><img src="sheet.jpg"></div>
+  <div class="modes">FOTO</div>
+  <div class="x">Avbryt</div>
+  <div class="shutter"><div></div></div>
+</div>
+
+<!-- 3. Sidan tillagd -->
+<div class="screen parent" id="s3">
+  <div class="status"><span>17:15</span><span>●●● ▮</span></div>
+  <div class="ph"><h1>Hej!</h1><p>Alvas läxor</p></div>
+  <div class="dim"></div>
+  <div class="dialog">
+    <h2>Ny läxa</h2>
+    <div class="desc">Fota läxbladet. Vi delar upp det i steg.</div>
+    <div class="lbl">Barn</div>
+    <div style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:500"><img src="../public/emoji-1f9b8.png" style="width:20px">Alva</div>
+    <div class="small" style="margin-top:16px">ⓘ 1 av 10 sidor tillagda — lägg till fler om läxan fortsätter.</div>
+    <div style="display:flex;gap:8px;margin-top:10px"><div class="thumb"><img src="sheet.jpg"></div><div class="thumb" style="border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:10px">＋<br>Lägg till</div></div>
+    <div class="small">JPG, PNG, PDF – max 10 sidor</div>
+    <div class="link">Fler sätt</div>
+    <div class="btn primary" style="margin-top:16px">📷&nbsp; Dela upp i steg (1 sida)</div>
+  </div>
+</div>
+
+<!-- 4. Analys -->
+<div class="screen parent" id="s4">
+  <div class="status"><span>17:16</span><span>●●● ▮</span></div>
+  <div class="dim"></div>
+  <div class="dialog" style="top:200px;padding:36px 22px">
+    <div class="spin"><div class="ring"></div></div>
+    <div style="text-align:center;margin-top:16px;font:600 18px Inter">Delar upp i steg...</div>
+    <div style="text-align:center;margin-top:4px;font-size:14px;color:var(--muted)">AI:n läser och skapar uppgifter</div>
+    <div class="bar"><div style="width:62%"></div></div>
+    <div style="text-align:center;margin-top:12px;font-size:14px;color:var(--muted)">62% klart</div>
+  </div>
+</div>
+
+<!-- 5. Klart: toast i föräldravyn -->
+<div class="screen parent" id="s5">
+  <div class="status"><span>17:16</span><span>●●● ▮</span></div>
+  <div class="ph" style="padding-top:110px"><h1>Hej!</h1><p>Alvas läxor</p></div>
+  <div class="childcard"><div class="row"><div class="av"><img src="../public/emoji-1f9b8.png"></div><div><div class="cname">Alva</div><div class="csub">Åk 2</div></div></div>
+    <div class="pill">Matematik · redo att göras</div></div>
+  <div class="toast"><div class="t">Läxa tillagd!</div><div class="d">Alvas matematik är redo att göras</div></div>
+</div>
+<script>
+const id=new URLSearchParams(location.search).get('s')||'s1';
+document.getElementById(id).classList.add('on');
+</script>
+</body></html>
