@@ -5,7 +5,7 @@ Metricool `getAnalyticsDataByMetrics`, brandId 6883444, from = idag − 30 dygn 
 
 | Id | Betydelse | Notion-fält |
 |---|---|---|
-| IGRE02 | Datum och tid (YYYYMMDDhhmmss, brandens tidszon Europe/Stockholm) | Faktisk posttid |
+| IGRE02 | Datum och tid (YYYYMMDDhhmmss, **UTC** – lägg till 2 h sommartid / 1 h vintertid för svensk tid; verifierat 2026-10-06 mot getScheduledPosts) | Faktisk posttid |
 | IGRE03 | Bildtext | Postad bildtext |
 | IGRE06 | Reel-URL | (Lärdom, första gången) |
 | IGRE23 | Visningar | Visningar |
