@@ -359,3 +359,75 @@ export const Reel = () => { useFontsReady(); return (
     <EndCard start={432} />
   </AbsoluteFill>
 );};
+
+// =================== Format v2 som props-styrd komposition (Reels-labb 2026-10-11) ===================
+// Hook → Scen → Kvällsknep → Barnvy (2 steg + "Ett steg i taget.") → Slutkort. 14,5 s. Allt manus skickas med --props.
+// props: photo, origin, hook1, hook2, hook2From (bildruta då rad 2 glider in; 0 = står från start), scene, sceneSub,
+//        knep, knepSub, subject, steps [{title,text}], total
+export const DUR_V2 = 435;
+const V2 = {hookEnd: 60, sceneEnd: 135, knepEnd: 240, appEnd: 340};
+
+const HookV2 = ({hook1, hook2, hook2From = 0}) => {
+  const f = useCurrentFrame();
+  const o = hook2From ? interpolate(f, [hook2From, hook2From + 8], [0, 1], {...clamp, easing: ease}) : 1;
+  const y = hook2From ? interpolate(f, [hook2From, hook2From + 10], [30, 0], {...clamp, easing: ease}) : 0;
+  return (
+    <Scene start={0} end={V2.hookEnd} instant justify="flex-end">
+      <div style={{fontFamily: FRED, fontWeight: 600, fontSize: 114, lineHeight: 1.06, color: C.white}}>{hook1}</div>
+      {hook2 && <div style={{fontFamily: FRED, fontWeight: 600, fontSize: 114, lineHeight: 1.06, color: C.turk, marginTop: 22,
+        opacity: o, transform: `translateY(${y}px)`}}>{hook2}</div>}
+    </Scene>
+  );
+};
+
+const SceneV2 = ({scene, sceneSub}) => {
+  const f = useCurrentFrame();
+  const o = interpolate(f, [V2.hookEnd + 24, V2.hookEnd + 36], [0, 1], clamp);
+  return (
+    <Scene start={V2.hookEnd} end={V2.sceneEnd} justify="flex-end">
+      <Words text={scene} from={V2.hookEnd + 2} stagger={3}
+        style={{fontFamily: FRED, fontWeight: 600, fontSize: 112, lineHeight: 1.1, color: C.white}} />
+      {sceneSub && <div style={{fontFamily: INTER, fontSize: 64, lineHeight: 1.35, color: C.blush, marginTop: 30, opacity: o}}>{sceneSub}</div>}
+    </Scene>
+  );
+};
+
+const KnepV2 = ({knep, knepSub}) => {
+  const f = useCurrentFrame();
+  const o = interpolate(f, [V2.sceneEnd + 40, V2.sceneEnd + 52], [0, 1], clamp);
+  return (
+    <Scene start={V2.sceneEnd} end={V2.knepEnd}>
+      <Pill from={V2.sceneEnd} color={C.lav}>Kvällsknep</Pill>
+      <Words text={knep} from={V2.sceneEnd + 6} stagger={3}
+        style={{fontFamily: FRED, fontWeight: 600, fontSize: 108, lineHeight: 1.1, color: C.white, marginTop: 50}} />
+      {knepSub && <div style={{fontFamily: INTER, fontSize: 60, lineHeight: 1.35, color: C.blush, marginTop: 36, opacity: o}}>{knepSub}</div>}
+    </Scene>
+  );
+};
+
+const AppV2 = ({subject, steps, total}) => {
+  const f = useCurrentFrame();
+  const o = Math.min(interpolate(f, [V2.knepEnd + 14, V2.knepEnd + 26], [0, 1], clamp), interpolate(f, [V2.appEnd, V2.appEnd + 9], [1, 0], clamp));
+  return (
+    <>
+      <AbsoluteFill style={{transform: 'scale(0.8)', transformOrigin: '50% 240px'}}>
+        <AppStepView start={V2.knepEnd} end={V2.appEnd} subject={subject} steps={steps} total={total} first={1} />
+      </AbsoluteFill>
+      <div style={{position: 'absolute', left: SIDE, right: SIDE, top: 1300, fontFamily: FRED, fontWeight: 600, fontSize: 96,
+        lineHeight: 1.1, color: C.turk, textAlign: 'center', opacity: o}}>Ett steg i taget.</div>
+    </>
+  );
+};
+
+export const ReelV2 = ({photo, origin = '50% 45%', hook1, hook2, hook2From = 0, scene, sceneSub, knep, knepSub,
+  subject = 'Matematik', steps = [], total = 8}) => { useFontsReady(); return (
+  <AbsoluteFill>
+    <Background />
+    {photo && <PhotoBg src={photo} start={0} end={V2.sceneEnd} instant zoom={[1.0, 1.16]} origin={origin} shade="bottom" />}
+    <HookV2 hook1={hook1} hook2={hook2} hook2From={hook2From} />
+    <SceneV2 scene={scene} sceneSub={sceneSub} />
+    <KnepV2 knep={knep} knepSub={knepSub} />
+    <AppV2 subject={subject} steps={steps} total={total} />
+    <EndCard start={V2.appEnd} />
+  </AbsoluteFill>
+);};
