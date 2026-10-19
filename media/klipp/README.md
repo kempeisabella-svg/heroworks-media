@@ -2,7 +2,7 @@
 
 Korta videoklipp (b-roll) som Reels-labbet bygger reels av. Bara händer, föremål och miljö – inga ansikten, inga namn, inga varumärken.
 
-Molnet kan inte hämta filer från Runway, så Bella laddar ner klippen och lägger dem här (Add file → Upload files i GitHub). Döp dem enligt tabellen.
+Molnet kan inte hämta filer från Runway direkt. Bella behöver inte ladda ner något själv: Claude hämtar klippen via Bellas Chrome när hon ber om det ("hämta klippen från Runway"), lägger en kopia i Heroworks-mappen på hennes dator och laddar upp dem hit. Döp dem enligt tabellen.
 
 | Filnamn | Innehåll | Källa |
 |---|---|---|
