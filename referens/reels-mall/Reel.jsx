@@ -431,3 +431,25 @@ export const ReelV2 = ({photo, origin = '50% 45%', hook1, hook2, hook2From = 0, 
     <EndCard start={V2.appEnd} />
   </AbsoluteFill>
 );};
+
+// =================== Kort reel (Reels-labb 2026-10-19, räckviddsfas) ===================
+// Hook (0–2 s, hela texten på bildruta 0) → Kvällsknep (3 s) → Slutkort (3,5 s). 8,5 s. Props: photo, origin, hook1, hook2, knep, knepSub.
+export const DUR_KORT = 255;
+const K = {hookEnd: 60, knepEnd: 150};
+export const ReelKort = ({photo, origin = '50% 45%', hook1, hook2, knep, knepSub}) => { useFontsReady(); return (
+  <AbsoluteFill>
+    <Background />
+    {photo && <PhotoBg src={photo} start={0} end={K.knepEnd} instant zoom={[1.0, 1.14]} origin={origin} shade="bottom" />}
+    <Scene start={0} end={K.hookEnd} instant justify="flex-end">
+      <div style={{fontFamily: FRED, fontWeight: 600, fontSize: 114, lineHeight: 1.06, color: C.white}}>{hook1}</div>
+      {hook2 && <div style={{fontFamily: FRED, fontWeight: 600, fontSize: 114, lineHeight: 1.06, color: C.turk, marginTop: 22}}>{hook2}</div>}
+    </Scene>
+    <Scene start={K.hookEnd} end={K.knepEnd} justify="flex-end">
+      <Pill from={K.hookEnd} color={C.lav}>Kvällsknep</Pill>
+      <Words text={knep} from={K.hookEnd + 4} stagger={3}
+        style={{fontFamily: FRED, fontWeight: 600, fontSize: 104, lineHeight: 1.1, color: C.white, marginTop: 44}} />
+      {knepSub && <div style={{fontFamily: INTER, fontSize: 60, lineHeight: 1.35, color: C.blush, marginTop: 32}}>{knepSub}</div>}
+    </Scene>
+    <EndCard start={K.knepEnd} />
+  </AbsoluteFill>
+);};

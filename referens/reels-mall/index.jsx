@@ -5,7 +5,7 @@ import '@fontsource/fredoka/700.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/700.css';
-import {Reel, DUR, ReelV2, DUR_V2} from './Reel';
+import {Reel, DUR, ReelV2, DUR_V2, ReelKort, DUR_KORT} from './Reel';
 import {Karusell, Story, Omslag} from './Stills';
 
 // Stillbilderna har inga exempeltexter: allt skickas med --props (se reels-mall/README.md), annars följer gammal text med.
@@ -13,6 +13,7 @@ const Root = () => (
   <>
     <Composition id="Reel" component={Reel} durationInFrames={DUR} fps={30} width={1080} height={1920} />
     <Composition id="ReelV2" component={ReelV2} durationInFrames={DUR_V2} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="ReelKort" component={ReelKort} durationInFrames={DUR_KORT} fps={30} width={1080} height={1920} defaultProps={{}} />
     <Still id="Karusell" component={Karusell} width={1080} height={1350}
       defaultProps={{}} />
     <Still id="Story" component={Story} width={1080} height={1920}
